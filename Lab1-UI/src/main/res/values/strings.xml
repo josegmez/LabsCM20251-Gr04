@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Labs20251-Gr04</string>
+    <string name="title_activity_personal_data">PersonalDataActivity</string>
 </resources>
