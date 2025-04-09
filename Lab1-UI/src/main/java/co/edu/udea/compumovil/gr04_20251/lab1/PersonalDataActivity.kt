@@ -13,15 +13,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +40,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.edu.udea.compumovil.gr04_20251.lab1.ui.theme.Labs20251Gr04Theme
+import java.text.SimpleDateFormat
 
 class PersonalDataActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,9 +58,10 @@ class PersonalDataActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonalDataForm(modifier: Modifier = Modifier) {
-    Column (
+    Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
@@ -62,7 +70,14 @@ fun PersonalDataForm(modifier: Modifier = Modifier) {
         NameInput()
         LastNameInput()
         SexSelector()
-        BirthdateInput()
+        BirthDateInput(
+            onDateSelected = { date ->
+                // Handle the selected date
+            },
+            onDismiss = {
+                // Handle the dialog dismissal
+            }
+        )
     }
 }
 
@@ -141,15 +156,69 @@ fun SexSelector() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BirthdateInput() {
-    val birthdate = rememberDatePickerState()
+@ExperimentalMaterial3Api
+fun BirthDateInput(
+    onDateSelected: (Long?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = System.currentTimeMillis(),
+    )
+    val isOpen = remember { mutableStateOf(false) }
+    val source = remember {
+        MutableInteractionSource()
+    }
 
-    DatePicker(
-        state = birthdate,
+    OutlinedTextField(
+        value = datePickerState.selectedDateMillis?.let {
+            SimpleDateFormat("dd/MM/yyyy").format(it)
+        } ?: "",
+        label = { Text("Birth Date") },
+        onValueChange = { },
+        trailingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.DateRange,
+                contentDescription = "Person Icon",
+                modifier = Modifier.padding(4.dp)
+            )
+        },
+        readOnly = true,
+        interactionSource = source,
         modifier = Modifier.fillMaxWidth()
     )
+
+    if (source.collectIsPressedAsState().value) {
+        isOpen.value = true
+    }
+
+    if (isOpen.value) {
+
+        DatePickerDialog(
+            onDismissRequest = onDismiss,
+            confirmButton = {
+                TextButton(onClick = {
+                    onDateSelected(datePickerState.selectedDateMillis)
+                    isOpen.value = false
+                    onDismiss()
+                }) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    onDismiss()
+                    isOpen.value = false
+                }) {
+                    Text("Cancel")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+}
+
 }
 
 @Preview(showBackground = true)
