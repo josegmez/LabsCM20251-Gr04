@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.AccountCircle
@@ -17,15 +19,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.edu.udea.compumovil.gr04_20251.lab1.ui.theme.Labs20251Gr04Theme
@@ -64,8 +69,9 @@ fun PersonalDataForm(modifier: Modifier = Modifier) {
 @Composable
 fun NameInput() {
     val name = remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
 
-    TextField(
+    OutlinedTextField(
         value = name.value,
         onValueChange = { name.value = it },
         label = { Text("Name") },
@@ -76,6 +82,16 @@ fun NameInput() {
                 modifier = Modifier.padding(4.dp)
             )
         },
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(
+                    focusDirection = FocusDirection.Down
+                )
+            }
+        ),
         modifier = Modifier.fillMaxWidth()
     )
 
@@ -85,7 +101,7 @@ fun NameInput() {
 fun LastNameInput() {
     val lastName = remember { mutableStateOf("") }
 
-    TextField(
+    OutlinedTextField(
         value = lastName.value,
         onValueChange = { lastName.value = it },
         label = { Text("Last Name") },
