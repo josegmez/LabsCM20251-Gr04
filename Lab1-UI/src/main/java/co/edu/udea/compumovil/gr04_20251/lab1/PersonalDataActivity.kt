@@ -4,7 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -78,6 +82,7 @@ fun PersonalDataForm(modifier: Modifier = Modifier) {
                 // Handle the dialog dismissal
             }
         )
+        SchoolingDropdownMenu()
     }
 }
 
@@ -136,7 +141,7 @@ fun SexSelector() {
     val sexOptions = listOf("Male", "Female")
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(sexOptions[0]) }
 
-    Row (
+    Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text("Sex:")
@@ -219,6 +224,56 @@ fun BirthDateInput(
     }
 }
 
+@Composable
+fun SchoolingDropdownMenu() {
+    val options = listOf("High School", "Undergraduate", "Graduate", "Other")
+    val selectedOption = remember { mutableStateOf("") }
+    val expanded = remember { mutableStateOf(false) }
+    val source = remember {
+        MutableInteractionSource()
+    }
+
+
+    Box() {
+        OutlinedTextField(
+            value = selectedOption.value,
+            label = { Text("Schooling") },
+            onValueChange = { },
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expanded.value = true },
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    contentDescription = "Schooling Selection",
+                    modifier = Modifier.padding(4.dp)
+                )
+            },
+            readOnly = true,
+            interactionSource = source,
+        )
+        DropdownMenu(
+            expanded = expanded.value,
+            onDismissRequest = { expanded.value = false },
+            modifier = Modifier.fillMaxWidth(
+                fraction = 0.9f
+            )
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        selectedOption.value = option
+                        expanded.value = false
+                    }
+                )
+            }
+        }
+    }
+
+    if (source.collectIsPressedAsState().value) {
+        expanded.value = true
+    }
 }
 
 @Preview(showBackground = true)
