@@ -1,5 +1,6 @@
 package co.edu.udea.compumovil.gr04_20251.lab1
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -39,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -65,29 +67,58 @@ class PersonalDataActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonalDataForm(modifier: Modifier = Modifier) {
+    val configuration = LocalConfiguration.current
+    val orientation = configuration.orientation
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        NameInput()
-        LastNameInput()
-        SexSelector()
-        BirthDateInput(
-            onDateSelected = { date ->
-                // Handle the selected date
-            },
-            onDismiss = {
-                // Handle the dialog dismissal
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            NameInput(modifier = Modifier.fillMaxWidth())
+            LastNameInput(modifier = Modifier.fillMaxWidth())
+            SexSelector(modifier = Modifier.fillMaxWidth())
+            BirthDateInput(
+                onDateSelected = { date ->
+                    // Handle the selected date
+                }, onDismiss = {
+                    // Handle the dialog dismissal
+                }, modifier = Modifier.fillMaxWidth()
+            )
+            SchoolingDropdownMenu(modifier = Modifier.fillMaxWidth())
+        } else {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                NameInput(modifier = Modifier.weight(1f))
+                LastNameInput(modifier = Modifier.weight(1f))
             }
-        )
-        SchoolingDropdownMenu()
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                BirthDateInput(
+                    onDateSelected = { date ->
+                        // Handle the selected date
+                    }, onDismiss = {
+                        // Handle the dialog dismissal
+                    }, modifier = Modifier.weight(1f)
+                )
+                SchoolingDropdownMenu(modifier = Modifier.weight(1f))
+            }
+            SexSelector()
+        }
+
     }
+
+
 }
 
 @Composable
-fun NameInput() {
+fun NameInput(modifier: Modifier = Modifier) {
     val name = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
 
@@ -108,18 +139,18 @@ fun NameInput() {
         keyboardActions = KeyboardActions(
             onNext = {
                 focusManager.moveFocus(
-                    focusDirection = FocusDirection.Down
+                    focusDirection = FocusDirection.Next
                 )
-            }
-        ),
-        modifier = Modifier.fillMaxWidth()
+            }),
+        modifier = modifier
     )
 
 }
 
 @Composable
-fun LastNameInput() {
+fun LastNameInput(modifier: Modifier = Modifier) {
     val lastName = remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
 
     OutlinedTextField(
         value = lastName.value,
@@ -132,29 +163,34 @@ fun LastNameInput() {
                 modifier = Modifier.padding(4.dp)
             )
         },
-        modifier = Modifier.fillMaxWidth()
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(
+                    focusDirection = FocusDirection.Next
+                )
+            }),
+        modifier = modifier
     )
 }
 
 @Composable
-fun SexSelector() {
+fun SexSelector(modifier: Modifier = Modifier) {
     val sexOptions = listOf("Male", "Female")
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(sexOptions[0]) }
 
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        modifier = modifier, verticalAlignment = Alignment.CenterVertically
     ) {
         Text("Sex:")
         sexOptions.forEach { option ->
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(4.dp)
+                verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(4.dp)
             ) {
                 RadioButton(
-                    selected = (option == selectedOption),
-                    onClick = { onOptionSelected(option) }
-                )
+                    selected = (option == selectedOption), onClick = { onOptionSelected(option) })
                 Text(option)
             }
         }
@@ -164,8 +200,7 @@ fun SexSelector() {
 @Composable
 @ExperimentalMaterial3Api
 fun BirthDateInput(
-    onDateSelected: (Long?) -> Unit,
-    onDismiss: () -> Unit
+    onDateSelected: (Long?) -> Unit, onDismiss: () -> Unit, modifier: Modifier = Modifier
 ) {
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = System.currentTimeMillis(),
@@ -178,19 +213,13 @@ fun BirthDateInput(
     OutlinedTextField(
         value = datePickerState.selectedDateMillis?.let {
             SimpleDateFormat("dd/MM/yyyy").format(it)
-        } ?: "",
-        label = { Text("Birth Date") },
-        onValueChange = { },
-        trailingIcon = {
+        } ?: "", label = { Text("Birth Date") }, onValueChange = { }, trailingIcon = {
             Icon(
                 imageVector = Icons.Outlined.DateRange,
                 contentDescription = "Person Icon",
                 modifier = Modifier.padding(4.dp)
             )
-        },
-        readOnly = true,
-        interactionSource = source,
-        modifier = Modifier.fillMaxWidth()
+        }, readOnly = true, interactionSource = source, modifier = modifier
     )
 
     if (source.collectIsPressedAsState().value) {
@@ -198,34 +227,35 @@ fun BirthDateInput(
     }
 
     if (isOpen.value) {
-
-        DatePickerDialog(
-            onDismissRequest = onDismiss,
-            confirmButton = {
-                TextButton(onClick = {
-                    onDateSelected(datePickerState.selectedDateMillis)
-                    isOpen.value = false
-                    onDismiss()
-                }) {
-                    Text("OK")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = {
-                    onDismiss()
-                    isOpen.value = false
-                }) {
-                    Text("Cancel")
-                }
+        DatePickerDialog(onDismissRequest = onDismiss, confirmButton = {
+            TextButton(onClick = {
+                onDateSelected(datePickerState.selectedDateMillis)
+                isOpen.value = false
+                onDismiss()
+            }) {
+                Text("OK")
             }
-        ) {
-            DatePicker(state = datePickerState)
+        }, dismissButton = {
+            TextButton(onClick = {
+                onDismiss()
+                isOpen.value = false
+            }) {
+                Text("Cancel")
+            }
+        }) {
+            DatePicker(
+                state = datePickerState, title = {
+                    Text(
+                        "Select your birth date",
+                        modifier = Modifier.padding(16.dp)
+                    )
+                })
         }
     }
 }
 
 @Composable
-fun SchoolingDropdownMenu() {
+fun SchoolingDropdownMenu(modifier: Modifier = Modifier) {
     val options = listOf("High School", "Undergraduate", "Graduate", "Other")
     val selectedOption = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
@@ -233,8 +263,9 @@ fun SchoolingDropdownMenu() {
         MutableInteractionSource()
     }
 
-
-    Box() {
+    Box(
+        modifier = modifier
+    ) {
         OutlinedTextField(
             value = selectedOption.value,
             label = { Text("Schooling") },
@@ -260,13 +291,10 @@ fun SchoolingDropdownMenu() {
             )
         ) {
             options.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(option) },
-                    onClick = {
-                        selectedOption.value = option
-                        expanded.value = false
-                    }
-                )
+                DropdownMenuItem(text = { Text(option) }, onClick = {
+                    selectedOption.value = option
+                    expanded.value = false
+                })
             }
         }
     }
