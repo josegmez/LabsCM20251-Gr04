@@ -117,7 +117,8 @@ fun PersonalDataForm(
             .fillMaxSize()
             .padding(16.dp)
             .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = stringResource(R.string.personal_data),
@@ -367,12 +368,13 @@ fun SexSelector(
     val maleRes = stringResource(R.string.male)
     val femaleRes = stringResource(R.string.female)
 
-    Column(modifier = modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         Text(
-            text = stringResource(R.string.gender),
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier
-                .padding(bottom = 8.dp)
+            text = stringResource(R.string.gender) + ":",
+            style = MaterialTheme.typography.bodyLarge
         )
 
         Row(
