@@ -51,6 +51,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.edu.udea.compumovil.gr04_20251.lab1.ui.theme.Labs20251Gr04Theme
@@ -306,7 +307,9 @@ fun NameInput(
             }
         },
         keyboardOptions = KeyboardOptions(
+            autoCorrectEnabled = false,
             capitalization = KeyboardCapitalization.Words,
+            keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Next
         ),
         keyboardActions = KeyboardActions(
@@ -347,6 +350,7 @@ fun LastNameInput(
         },
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.Words,
+            keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Next
         ),
         keyboardActions = KeyboardActions(
