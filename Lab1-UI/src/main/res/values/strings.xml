@@ -28,4 +28,5 @@
     <string name="email">Email</string>
     <string name="country">Country</string>
     <string name="city">City</string>
+    <string name="title_activity_contact_data">ContactDataActivity</string>
 </resources>
