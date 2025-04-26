@@ -2,6 +2,7 @@
     <!--  Common  -->
     <string name="app_name">Lab 1 - UI 20251-Gr04</string>
     <string name="title_activity_personal_data">PersonalDataActivity</string>
+    <string name="cancel">Cancel</string>
     <string name="next">Next</string>
     <string name="submit">Submit</string>
     <string name="required_field">This field is required</string>
