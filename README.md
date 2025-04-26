@@ -22,7 +22,7 @@ Simple Android application with two forms for gathering personal data. Consist o
 - [x] Validation of required fields
 - [x] Validation of patterns for email and phone number
 - [x] 'Next' keyboard action
-- [ ] Disabled keyboard suggestions for pertinent fields
+- [x] Disabled keyboard suggestions for pertinent fields
 - [x] Use of Material Design components
 - [x] Custom app icon
 - [x] Logcat logs for each activity form submission
