@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--  Common  -->
+    <string name="app_name">Lab 1 - UI 20251-Gr04</string>
+    <string name="title_activity_personal_data">PersonalDataActivity</string>
+    <string name="next">Siguiente</string>
+    <string name="submit">Enviar</string>
+    <string name="required_field">Este campo es obligatorio</string>
+    <!--  Personal Data Screen  -->
+    <string name="personal_data">Datos Personales</string>
+    <string name="first_name">Nombres</string>
+    <string name="last_name">Apellidos</string>
+    <string name="gender">Sexo</string>
+    <string name="male">Masculino</string>
+    <string name="female">Femenino</string>
+    <string name="date_of_birth">Fecha de Nacimiento</string>
+    <string name="select_date">Seleccionar Fecha</string>
+    <string name="education_level">Grado de Escolaridad</string>
+    <string name="primary">Primaria</string>
+    <string name="secondary">Secundaria</string>
+    <string name="technical">Técnico</string>
+    <string name="university">Universidad</string>
+    <string name="postgraduate">Postgrado</string>
+    <!--  Contact Data Screen  -->
+    <string name="contact_data">Datos de Contacto</string>
+    <string name="phone">Teléfono</string>
+    <string name="address">Dirección</string>
+    <string name="email">Correo Electrónico</string>
+    <string name="country">País</string>
+    <string name="city">Ciudad</string>
+</resources>
