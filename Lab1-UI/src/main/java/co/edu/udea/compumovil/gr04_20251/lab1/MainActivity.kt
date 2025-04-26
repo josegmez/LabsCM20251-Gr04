@@ -19,6 +19,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import co.edu.udea.compumovil.gr04_20251.lab1.ui.theme.Labs20251Gr04Theme
+import co.edu.udea.compumovil.gr04_20251.lab1.utils.PrintUtils.printContactData
+import co.edu.udea.compumovil.gr04_20251.lab1.utils.PrintUtils.printPersonalData
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,11 +29,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             Labs20251Gr04Theme {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    AppNavigation()
-                }
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                ) { AppNavigation() }
             }
         }
     }
@@ -46,29 +46,29 @@ fun AppNavigation() {
 
     Scaffold { innerPadding ->
         NavHost(
-            navController = navController,
-            startDestination = "personal_data",
-            modifier = Modifier.padding(innerPadding)
+                navController = navController,
+                startDestination = "personal_data",
+                modifier = Modifier.padding(innerPadding)
         ) {
             composable("personal_data") {
                 PersonalDataForm(
-                    personalData = personalData,
-                    onPersonalDataChange = { personalData = it },
-                    onNextClick = { validData ->
-                        // TODO: Print personal data
-                        personalData = validData
-                        navController.navigate("contact_data")
-                    }
+                        personalData = personalData,
+                        onPersonalDataChange = { personalData = it },
+                        onNextClick = { validData ->
+                            printPersonalData(validData)
+                            personalData = validData
+                            navController.navigate("contact_data")
+                        }
                 )
             }
             composable("contact_data") {
                 ContactDataForm(
-                    contactData = contactData,
-                    onContactDataChange = { contactData = it },
-                    onSubmitClick = { validData ->
-                        // TODO: Print contact data
-                        contactData = validData
-                    }
+                        contactData = contactData,
+                        onContactDataChange = { contactData = it },
+                        onSubmitClick = { validData ->
+                            printContactData(validData)
+                            contactData = validData
+                        }
                 )
             }
         }
